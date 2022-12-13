@@ -1,0 +1,47 @@
+#Original code from: https://github.com/hyperledger/firefly-fabconnect/blob/main/docs/getting-started/test-network.md#configure_fabconnect_testnetwork
+
+version: "2.1"
+
+networks:
+    default:
+        external:
+            name: fabric_test
+
+services:
+    fabconnect_0:
+        container_name: firefly_fabconnect_0
+        image: ghcr.io/hyperledger/firefly-fabconnect:latest
+        command: -f /fabconnect/fabconnect.yaml
+        volumes:
+            - fabconnect_receipts_0:/fabconnect/receipts
+            - fabconnect_events_0:/fabconnect/events
+            - ./fabconnect.yaml:/fabconnect/fabconnect.yaml
+            - ./ccp.yaml:/fabconnect/ccp.yaml
+            - ./../fabric-samples-test-network/test-network/organizations:/etc/firefly/organizations
+
+        # If your services are listening on “localhost” and not on the Docker network (172.x.x.x),
+        # you need to run your container on the host network (network_mode)
+        #network_mode: host
+
+        # In Mac to connect to the Docker host from inside a Docker container, use the "host.docker.internal" hostname
+        # should work without additional configuration, but if not, you can set the extra host this way.
+        # With "host-gateway" instead of an IP address.
+        # extra_hosts:
+        #     - "host.docker.internal:host-gateway"
+        ports:
+            - "3000:3000"
+        healthcheck:
+            test:
+                - CMD
+                - wget
+                - -O
+                - '-'
+                - http://localhost:3000/status
+        logging:
+            driver: json-file
+            options:
+                max-file: "1"
+                max-size: 10m
+volumes:
+    fabconnect_events_0: {}
+    fabconnect_receipts_0: {}

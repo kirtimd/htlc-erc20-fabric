@@ -1,3 +1,3 @@
 [submodule "fabric-samples-test-network"]
 	path = fabric-samples-test-network
-	url = https://github.com/hyperledger/fabric-samples.git
+	url = https://github.com/kirtimd/fabric-samples-test-network.git
